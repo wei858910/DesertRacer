@@ -27,9 +27,38 @@ class APlayerCharacter : APawn
     // 让 Player0（第一个本地玩家）的控制器自动 Possess（占据） 当前Actor，使其成为玩家控制的实体。
     default AutoPossessPlayer = EAutoReceiveInput::Player0;
 
+    UPROPERTY(Category = "Input")
+    UInputMappingContext InputMappingContext;
+
+    UPROPERTY(Category = "Input")
+    UInputAction InputAction;
+
+    UPROPERTY(DefaultComponent, Category = "Input")
+    UEnhancedInputComponent InputComponent;
 
     UFUNCTION(BlueprintOverride)
     void BeginPlay()
     {
+        APlayerController PlayerController = Cast<APlayerController>(Controller);
+        if (IsValid(PlayerController))
+        {
+            InputComponent = UEnhancedInputComponent::Create(PlayerController);
+            PlayerController.PushInputComponent(InputComponent);
+
+            UEnhancedInputLocalPlayerSubsystem EnhancedInputSystem = UEnhancedInputLocalPlayerSubsystem::Get(PlayerController);
+            if (IsValid(EnhancedInputSystem) && IsValid(InputMappingContext))
+            {
+                EnhancedInputSystem.AddMappingContext(InputMappingContext, 0, FModifyContextOptions());
+
+                InputComponent.BindAction(InputAction, ETriggerEvent::Triggered, FEnhancedInputActionHandlerDynamicSignature(this, n"MoveAction"));
+            }
+        }
+    }
+
+    UFUNCTION()
+    private void MoveAction(FInputActionValue ActionValue, float32 ElapsedTime, float32 TriggeredTime, const UInputAction SourceAction)
+    {
+        FVector2D MoveActionValue = ActionValue.GetAxis2D();
+        Print(MoveActionValue.ToString());
     }
 };
