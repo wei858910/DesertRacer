@@ -6,10 +6,13 @@ class AObstacleActor : AActor
     UPROPERTY(DefaultComponent)
     UPaperSpriteComponent ObstacleSprite;
 
+    AMyGameMode MyGameMode;
+
     UFUNCTION(BlueprintOverride)
     void BeginPlay()
     {
         CapsuleComp.OnComponentBeginOverlap.AddUFunction(this, n"OverlapBegin");
+        MyGameMode = Cast<AMyGameMode>(Gameplay::GetGameMode());
     }
 
     UFUNCTION()
@@ -19,6 +22,10 @@ class AObstacleActor : AActor
         if (IsValid(Player))
         {
             Player.bCanMove = false;
+            if(IsValid(MyGameMode))
+            {
+                MyGameMode.ResetMyLevel(false);
+            }
         }
     }
 };
