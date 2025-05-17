@@ -76,7 +76,7 @@ class APlayerCharacter : APawn
                 float DeltaTime = Gameplay::GetWorldDeltaSeconds();
                 if (Math::Abs(MoveActionValue.X) > 0.)
                 {
-                    float RotationAmount = RotaitonSpeed * MoveActionValue.X * DeltaTime * -1;
+                    float RotationAmount = -RotaitonSpeed * MoveActionValue.X * DeltaTime;
                     AddActorWorldRotation(FRotator(RotationAmount, 0., 0.));
                 }
 
