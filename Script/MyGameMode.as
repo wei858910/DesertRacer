@@ -12,6 +12,11 @@ class AMyGameMode : AGameModeBase
     UFUNCTION(BlueprintOverride)
     void BeginPlay()
     {
+        UMyGameInstance MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+        if(IsValid(MyGameInstance))
+        {
+            MyGameInstance.PlayBGMusic();
+        }
     }
 
     UFUNCTION()
