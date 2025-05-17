@@ -36,6 +36,15 @@ class APlayerCharacter : APawn
     UPROPERTY(DefaultComponent, Category = "Input")
     UEnhancedInputComponent InputComponent;
 
+    UPROPERTY()
+    float MoveSpeed = 1000.;
+
+    UPROPERTY()
+    float RotaitonSpeed = 100.;
+
+    UPROPERTY()
+    bool bCanMove = true;
+
     UFUNCTION(BlueprintOverride)
     void BeginPlay()
     {
@@ -59,6 +68,34 @@ class APlayerCharacter : APawn
     private void MoveAction(FInputActionValue ActionValue, float32 ElapsedTime, float32 TriggeredTime, const UInputAction SourceAction)
     {
         FVector2D MoveActionValue = ActionValue.GetAxis2D();
-        Print(MoveActionValue.ToString());
+        if (bCanMove)
+        {
+
+            if (Math::Abs(MoveActionValue.Y) > 0.)
+            {
+                float DeltaTime = Gameplay::GetWorldDeltaSeconds();
+                if (Math::Abs(MoveActionValue.X) > 0.)
+                {
+                    float RotationAmount = RotaitonSpeed * MoveActionValue.X * DeltaTime * -1;
+                    AddActorWorldRotation(FRotator(RotationAmount, 0., 0.));
+                }
+
+                float FinalMovementSpeed = MoveSpeed;
+
+                if (MoveActionValue.Y < 0.)
+                {
+                    FinalMovementSpeed *= 0.5;
+                }
+
+                FVector CurrentLocation = GetActorLocation();
+                FVector DistanceToMove = GetActorUpVector() * MoveActionValue.Y * DeltaTime * FinalMovementSpeed;
+                FVector NewLocation = CurrentLocation + DistanceToMove;
+                SetActorLocation(NewLocation);
+            }
+
+            if (Math::Abs(MoveActionValue.X) > 0.)
+            {
+            }
+        }
     }
 };
