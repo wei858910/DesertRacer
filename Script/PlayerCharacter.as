@@ -21,7 +21,7 @@ class APlayerCharacter : APawn
     UPROPERTY(DefaultComponent, Attach = CapsuleComp)
     UPaperSpriteComponent CarSprite;
     default CarSprite.SetSprite(CarSpriteSource);
-    default CarSprite.SetRelativeScale3D(FVector(0.6, 0.6, 0.6));
+    default CarSprite.SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
     default CarSprite.SetCollisionProfileName(n"NoCollision");
 
     // 让 Player0（第一个本地玩家）的控制器自动 Possess（占据） 当前Actor，使其成为玩家控制的实体。
