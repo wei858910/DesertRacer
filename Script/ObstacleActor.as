@@ -6,7 +6,13 @@ class AObstacleActor : AActor
     UPROPERTY(DefaultComponent)
     UPaperSpriteComponent ObstacleSprite;
 
+    UPROPERTY()
+    USoundBase HitSound;
+
     AMyGameMode MyGameMode;
+
+    UPROPERTY()
+    bool bIsFinishLine = false;
 
     UFUNCTION(BlueprintOverride)
     void BeginPlay()
@@ -18,13 +24,22 @@ class AObstacleActor : AActor
     UFUNCTION()
     private void OverlapBegin(UPrimitiveComponent OverlappedComponent, AActor OtherActor, UPrimitiveComponent OtherComp, int OtherBodyIndex, bool bFromSweep, const FHitResult&in SweepResult)
     {
+        Gameplay::PlaySound2D(HitSound);
+
         APlayerCharacter Player = Cast<APlayerCharacter>(OtherActor);
         if (IsValid(Player))
         {
-            Player.bCanMove = false;
-            if(IsValid(MyGameMode))
+            if (IsValid(MyGameMode))
             {
-                MyGameMode.ResetMyLevel(false);
+                if (bIsFinishLine)
+                {
+                    MyGameMode.ResetMyLevel(true);
+                }
+                else
+                {
+                    Player.bCanMove = false;
+                    MyGameMode.ResetMyLevel(false);
+                }
             }
         }
     }
